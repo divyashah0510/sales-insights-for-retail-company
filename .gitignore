@@ -1,0 +1,14 @@
+# Virtual Environment
+.venv/
+
+# Information Files
+info/
+
+# Data Folder files
+data/
+
+# Source Folder
+src/
+
+# Intellij Folder
+.idea/
