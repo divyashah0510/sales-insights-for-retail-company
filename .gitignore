@@ -8,7 +8,9 @@ info/
 data/
 
 # Source Folder
-src/
+src/dataset-generator.py
+src/streamlit_app.py
+
 
 # Intellij Folder
 .idea/
