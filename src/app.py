@@ -11,8 +11,8 @@ st.set_page_config(page_title="Sales Dashboard", page_icon=":bar_chart:", layout
 st.title("Sales Dashboard")
 # st.markdown("_Prototype v0.4.1_")
 # Define the link
-url = "data/sales_dataset_cleaned_100k.csv"
-file_path = pd.read_csv(url).to_csv(index=False).encode('utf-8')
+# Define the direct Google Drive download link
+sample_dataset_url = "https://drive.google.com/uc?export=download&id=1oWcaX0u8FFkF9a6OYtNhm7pIhNEptdgy"
 
 with st.sidebar:
     st.header("Configuration")
@@ -23,10 +23,12 @@ if uploaded_file is None:
     st.info("Upload a file", icon="ℹ️")
     # Additional text with a message
     st.markdown("You can use this sample dataset provided for visualizing the project.")
+    # Read the sample dataset from Google Drive link
+    df = pd.read_csv(sample_dataset_url)
     # Create a download button
     st.download_button(
         label="Download Sample Dataset",
-        data=file_path,
+        data=df.to_csv(index=False).encode('utf-8'),
         file_name='sales_dataset_cleaned_100k.csv',
         mime='text/csv'
     )
