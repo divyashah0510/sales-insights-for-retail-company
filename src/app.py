@@ -10,6 +10,9 @@ st.set_page_config(page_title="Sales Dashboard", page_icon=":bar_chart:", layout
 
 st.title("Sales Dashboard")
 # st.markdown("_Prototype v0.4.1_")
+# Define the link
+url = "data/sales_dataset_cleaned_100k.csv"
+file_path = pd.read_csv(url).to_csv(index=False).encode('utf-8')
 
 with st.sidebar:
     st.header("Configuration")
@@ -18,6 +21,15 @@ with st.sidebar:
 # Ensure the file is uploaded before proceeding
 if uploaded_file is None:
     st.info("Upload a file", icon="ℹ️")
+    # Additional text with a message
+    st.markdown("You can use this sample dataset provided for visualizing the project.")
+    # Create a download button
+    st.download_button(
+        label="Download Sample Dataset",
+        data=file_path,
+        file_name='sales_dataset_cleaned_100k.csv',
+        mime='text/csv'
+    )
     st.stop()
 
 # DATA LOADING
