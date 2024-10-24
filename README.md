@@ -53,6 +53,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Author
 
 - [Divya Shah](https://www.linkedin.com/in/divya-d-shah/)
+- [Aryan Singh]()
+- [Pooja Valecha]()
 
 ## Credits
 
