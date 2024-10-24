@@ -49,8 +49,8 @@ product_name = st.sidebar.selectbox(
     df['Product Name'].unique()
 )
 
-with st.expander("Data Preview"):
-    st.dataframe(df)
+# with st.expander("Data Preview"):
+#     st.dataframe(df)
 
 # New Graphs
 
@@ -110,8 +110,8 @@ def plot_sales_growth():
 
 # 10. Top 5 Selling Products (Horizontal Bar)
 def plot_top_selling_products():
-    top_products = df.groupby('Product Name')['Sales Amount'].sum().nlargest(5).reset_index()
-    fig = px.bar(top_products, x='Sales Amount', y='Product Name', orientation='h', title='Top 5 Selling Products')
+    top_products = df.groupby('Product Name')['Sales Amount'].sum().nlargest(3).reset_index()
+    fig = px.bar(top_products, x='Sales Amount', y='Product Name', orientation='h', title='Top 3 Selling Products')
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -221,7 +221,7 @@ def plot_bottom_left():
                 "Sales Amount"
             FROM df
             WHERE "Product Name" = '{product_name}' 
-            AND "Date" BETWEEN '2023-01-01' AND '2023-12-31'
+            AND "Date" BETWEEN '2020-01-01' AND '2024-12-31'
         )
         SELECT * FROM sales_data
         """
@@ -236,7 +236,7 @@ def plot_bottom_left():
     # Data Processing
     sales_data['Date'] = pd.to_datetime(sales_data['Date'])
     sales_data.set_index('Date', inplace=True)
-    sales_data = sales_data.resample('M').sum().reset_index()
+    sales_data = sales_data.resample('ME').sum().reset_index()
 
     # Check the processed data
     if sales_data.empty:
@@ -248,7 +248,7 @@ def plot_bottom_left():
         sales_data,
         x="Date",
         y="Sales Amount",
-        title=f"Monthly Sales for {product_name} in 2023",
+        title=f"Monthly Sales for {product_name} in 2020-24",
         markers=True,
     )
     st.plotly_chart(fig, use_container_width=True)
@@ -262,7 +262,7 @@ def plot_bottom_right():
                 "Product Name",
                 SUM("Sales Amount") AS sales
             FROM df
-            WHERE "Date" BETWEEN '2023-01-01' AND '2023-12-31'
+            WHERE "Date" BETWEEN '2023-06-01' AND '2024-06-31'
             GROUP BY "Product Name"
         )
         SELECT * FROM sales_data
@@ -274,7 +274,7 @@ def plot_bottom_right():
         sales_data,
         x="Product Name",
         y="sales",
-        title="Total Sales by Product for Year 2023",
+        title="Total Sales by Product for Year 2023-24",
     )
     st.plotly_chart(fig, use_container_width=True)
 
@@ -289,7 +289,7 @@ with top_left_column:
         plot_metric(
             "Total Sales Amount",
             df["Sales Amount"].sum(),
-            prefix="$",
+            prefix="₹",
             show_graph=True,
             color_graph="rgba(0, 104, 201, 0.2)",
         )
@@ -299,19 +299,25 @@ with top_left_column:
         plot_metric(
             "Total Quantity Sold",
             df["Quantity Sold"].sum(),
-            prefix="",
+            prefix="₹",
             show_graph=True,
             color_graph="rgba(255, 43, 43, 0.2)",
         )
         plot_gauge(df["Quantity Sold"].mean(), "#FF8700", " units", "Average Quantity per Sale", 1000)
 
     with column_3:
-        plot_metric("Total Cost", df["Cost"].sum(), prefix="$", suffix="")
-        plot_gauge(df["Cost"].mean(), "#FF2B2B", "$", "Average Cost per Sale", 10000)
+        plot_metric("Total Cost", df["Cost"].sum(), prefix="₹",show_graph=True,color_graph="rgba(13, 169, 156, 0.2)")
+        plot_gauge(df["Cost"].mean(), "#FF2B2B", "", "Average Cost per Sale", 10000)
 
     with column_4:
-        plot_metric("Total Discounts", df["Discounts Applied"].sum(), prefix="$", suffix="")
-        plot_gauge(df["Discounts Applied"].mean(), "#29B09D", "$", "Average Discount per Sale", 1000)
+        total_discounts = df["Discounts Applied"].sum()
+        total_sales = df["Sales Amount"].sum()
+        discount_percentage = (total_discounts / total_sales) * 100
+
+        plot_metric("Total Discounts", total_discounts, prefix="₹", show_graph=True, color_graph="rgba(55, 213, 57, 0.2)")
+        
+        # Adjust the max_bound to better represent small percentages
+        plot_gauge(discount_percentage, "#37D539", "%", "Discount Percentage", max_bound=5)
 
 with top_right_column:
     plot_top_right()
