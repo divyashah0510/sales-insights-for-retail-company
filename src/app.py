@@ -68,8 +68,10 @@ def plot_sales_by_channel():
 
 # 3. Sales Trend by Product Size
 def plot_sales_by_size():
-    size_data = df.groupby(['Size', 'Date'])['Sales Amount'].sum().reset_index()
-    fig = px.line(size_data, x='Date', y='Sales Amount', color='Size', title='Sales Trend by Product Size')
+    # Filter data for the year 2023-24
+    filtered_data = df[(df['Date'] >= '2023-06-01') & (df['Date'] <= '2024-06-31')]
+    size_data = filtered_data.groupby(['Size', 'Date'])['Sales Amount'].sum().reset_index()
+    fig = px.line(size_data, x='Date', y='Sales Amount', color='Size', title='Sales Trend by Product Size 2023-24')
     st.plotly_chart(fig, use_container_width=True)
 
 # 4. Order and Return Status Overview
@@ -221,7 +223,7 @@ def plot_bottom_left():
                 "Sales Amount"
             FROM df
             WHERE "Product Name" = '{product_name}' 
-            AND "Date" BETWEEN '2020-01-01' AND '2024-12-31'
+            AND "Date" BETWEEN '2023-06-01' AND '2024-06-31'
         )
         SELECT * FROM sales_data
         """
@@ -248,7 +250,7 @@ def plot_bottom_left():
         sales_data,
         x="Date",
         y="Sales Amount",
-        title=f"Monthly Sales for {product_name} in 2020-24",
+        title=f"Monthly Sales for {product_name} in 2023-24",
         markers=True,
     )
     st.plotly_chart(fig, use_container_width=True)
